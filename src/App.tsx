@@ -6,7 +6,7 @@ function App() {
     <ApiReferenceReact
       configuration={{
         spec: {
-          url: 'https://api.api-fiddle.com/v1/public/resources/oas_api_3_1/sunday-joshuas-organization-823/hot-cat-3fa5',
+          url: 'https://api.api-fiddle.com/v1/public/resources/oas_api_3_1/sunday-joshuas-organization-823/dry-kangaroo-frsa?draft_id=01997346-7d62-7192-9b17-272a917036d7',
         },
       }}
     />

@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: Patient Monitoring API
+  version: 1.0.0
+  description: |
+    API-powered cloud infrastructure IoT sensors patient monitoring system. Provides secure endpoints for uploading and retrieving real-time vital signs.
+  x-fiddle-import-file: true
+servers:
+- url: https://api.example.com/v1
+paths:
+  /auth/register:
+    post:
+      summary: Register new healthcare provider
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+          description: Registration successful
+      description: Create a new account for doctors/healthcare workers.
+      operationId: postRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth_register_body'
+        required: true
+  /patients/{id}:
+    get:
+      summary: Get patient vitals
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+          description: Patient vitals retrieved
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          example: PAT12345
+        required: true
+        description: Patient ID
+      description: Retrieve real-time and historical patient vitals.
+      operationId: getPatient
+  /vitals/upload:
+    post:
+      summary: Upload patient vitals
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: Data uploaded successfully
+      description: Send real-time vitals from IoT device to the cloud.
+      operationId: postUpload
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vitals_upload_body'
+        required: true
+components:
+  schemas:
+    auth_register_body:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Dr. Jane Doe
+        email:
+          type: string
+          example: doctor@example.com
+        password:
+          type: string
+          example: securePass123
+    vitals_upload_body:
+      type: object
+      properties:
+        spo2:
+          type: number
+          example: 96.5
+        heartRate:
+          type: integer
+          example: 78
+        patientId:
+          type: string
+          example: PAT12345
+        temperature:
+          type: number
+          format: float
+          example: 37.2
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Vitals uploaded successfully.
+        timestamp:
+          type: string
+          example: 2025-09-22T18:30:00Z
+    inline_response_201:
+      type: object
+      properties:
+        apiKey:
+          type: string
+          example: abcdef123456
+    inline_response_200_1:
+      type: object
+      properties:
+        vitals:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_1_vitals'
+        patientId:
+          type: string
+    inline_response_200_1_vitals:
+      type: object
+      properties:
+        spo2:
+          type: number
+          example: 97
+        heartRate:
+          type: integer
+          example: 80
+        timestamp:
+          type: string
+          example: 2025-09-22T18:30:00Z
+        temperature:
+          type: number
+          example: 36.8
+  securitySchemes:
+    ApiKeyAuth:
+      in: header
+      name: Authorization
+      type: apiKey
